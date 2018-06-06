@@ -1,6 +1,7 @@
-import React, { Component } from "react";
-import "src/App.css";
-import logo from "./logo.svg";
+import React, { Component } from 'react';
+import 'src/App.css';
+import logo from './logo.svg';
+
 type Props = {
   foo: number,
   bar?: string
@@ -8,7 +9,6 @@ type Props = {
 
 class App extends Component<Props> {
   render() {
-    this.props.doesNotExist;
     return (
       <div className="App">
         <header className="App-header">
