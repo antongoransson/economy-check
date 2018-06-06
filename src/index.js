@@ -7,6 +7,6 @@ import registerServiceWorker from './registerServiceWorker';
 const root: ?Element = document.getElementById('root');
 
 if (root != null) {
-  ReactDOM.render(<App foo={42} />, root);
+  ReactDOM.render(<App />, root);
   registerServiceWorker();
 }
