@@ -1,27 +1,41 @@
 
   {
+    "parser": "babel-eslint",
     "env": {
         "browser": true,
-        "jest": true
+        "jest": true,
+        "es6": true,
+        "node" :true
     },
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
         "airbnb",
-        "prettier"
+        "prettier",
+        "prettier/flowtype",
+        "prettier/react",
+        "prettier/standard"
     ],
-    "parser": "babel-eslint",
+    "plugins": [ "react" ],
     "rules": {
-        "class-methods-use-this": 0,
         "import/no-named-as-default": 0,
         "react/jsx-filename-extension": [
         "error",
         {
          "extensions": [".js", ".jsx"]
         }
-        ]
+        ],
+       "quotes": ["error", "single", { "avoidEscape": true }],
+       "jsx-a11y/anchor-is-valid": [ "error", {
+        "components": [ "Link" ],
+        "specialLink": [ "to" ]
+      }]
     },
-    "import/resolver": {
-        "babel-plugin-root-import": {}
+    "settings": {
+      "import/resolver": {
+        "node": {
+          "moduleDirectory": ["node_modules", "./"]
+        }
       }
+    }
 }
