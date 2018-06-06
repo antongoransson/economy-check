@@ -1,2 +1,5 @@
-# economy-check
-Easy way to get an overview of economy
+# Economy Check
+[![Build Status](https://travis-ci.com/antongoransson/economy-check.svg?token=UA1BYVC5SyZTATwUNtvz&branch=master)](https://travis-ci.com/antongoransson/economy-check) 
+[![codecov](https://codecov.io/gh/antongoransson/economy-check/branch/master/graph/badge.svg?token=DJwCGL49xs)](https://codecov.io/gh/antongoransson/economy-check)
+
+A tool to help you to get an overview of economy
