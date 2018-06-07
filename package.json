@@ -6,9 +6,12 @@
     "express": "^4.16.3",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.0",
     "react-scripts": "1.1.4",
-    "react-test-renderer": "^16.4.0"
+    "react-test-renderer": "^16.4.0",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "$(npm bin)/flow && react-scripts start",
@@ -38,7 +41,7 @@
     "prettier-eslint": "^8.8.1"
   },
   "peerDependencies": {
-    "jest": "20.0.4" 
+    "jest": "20.0.4"
   },
   "jest": {
     "collectCoverageFrom": [
