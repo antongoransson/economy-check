@@ -6,6 +6,6 @@ cache:
     - node_modules
 script:
   - npm run postinstall
-  - npm test
+  - npm run testC
 after_success:
   - bash <(curl -s https://codecov.io/bash)
