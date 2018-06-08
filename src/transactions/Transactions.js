@@ -1,24 +1,62 @@
 import React from 'react';
-import { AutoComplete } from 'antd';
+import { AutoComplete, Button, List } from 'antd';
 import { connect } from 'react-redux';
-import { addTransaction, updateTransaction } from './TransactionsActions';
+import type { Dispatch } from 'redux';
+import {
+  addTransaction as addT,
+  updateTransaction as updateT
+} from './TransactionsActions';
 
-const Transactions = ({ currentTransaction }) => (
+type Props = {
+  allTransactions: { name: string, cost: number }[],
+  currentTransaction: { name: string, cost: number },
+  updateTransaction: (name: string, cost: number) => void,
+  addTransaction: (name: string, cost: number) => void
+};
+
+const Transactions = ({
+  currentTransaction,
+  updateTransaction,
+  addTransaction,
+  allTransactions
+}: Props) => (
   <div>
     <h3>Handle transactions</h3>
     <AutoComplete
-      onChange={val => updateTransaction(val, 10)}
-      value={currentTransaction}
+      onSearch={val => updateTransaction(val, currentTransaction.cost)}
+      value={currentTransaction.name}
       autoFocus
       placeholder="Enter name of transaction"
+    />
+    <AutoComplete
+      onSearch={val => updateTransaction(currentTransaction.name, val)}
+      value={currentTransaction.cost}
+      placeholder="Enter cost of transaction"
+    />
+    <Button
+      type="primary"
+      onClick={() =>
+        addTransaction(currentTransaction.name, currentTransaction.cost)
+      }
+    >
+      Add transaction
+    </Button>
+    <List
+      dataSource={allTransactions}
+      renderItem={item => (
+        <List.Item>{`${item.name}       ${item.cost}`}</List.Item>
+      )}
     />
   </div>
 );
 
-const mapStateToProps = state => ({ ...state });
-const mapDispatchToProps = dispatch => ({
-  updateTransaction: (name, cost) => dispatch(updateTransaction(name, cost)),
-  addTransaction: (name, cost) => dispatch(addTransaction(name, cost))
+const mapStateToProps = state => ({
+  ...state.transactions
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<*>) => ({
+  updateTransaction: (name, cost) => dispatch(updateT(name, cost)),
+  addTransaction: (name, cost) => dispatch(addT(name, cost))
 });
 
 export default connect(

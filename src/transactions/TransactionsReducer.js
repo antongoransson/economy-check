@@ -4,19 +4,34 @@ const INITIAL_STATE = {
   currentTransaction: {},
   allTransactions: []
 };
-const transactions = (state = INITIAL_STATE, action) => {
+
+type State = {
+  currentTransaction: { name?: string, cost?: number },
+  allTransactions: { name?: string, cost?: number }[]
+};
+
+const transactions = (
+  state: State = INITIAL_STATE,
+  action: { type: string, name: string, cost: number }
+) => {
   switch (action.type) {
-    case ADD_TRANSACTION:
+    case ADD_TRANSACTION: {
       return {
         ...state,
-        allTransactions: [...state.allTransactions].concat([
-          { name: action.name, cost: action.cost }
-        ])
+        currentTransaction: {},
+        allTransactions: [
+          ...state.allTransactions,
+          {
+            name: action.name,
+            cost: action.cost
+          }
+        ]
       };
+    }
     case UPDATE_TRANSACTION:
       return {
         ...state,
-        currenTransaction: { name: action.name, cost: action.cost }
+        currentTransaction: { name: action.name, cost: action.cost }
       };
     default:
       return state;
