@@ -1,15 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import Transactions from 'src/transactions/Transactions';
 
 const Overview = () => (
   <div>
     <h2>Overview</h2>
-  </div>
-);
-
-const HandleItems = () => (
-  <div>
-    <h3>Handle items</h3>
   </div>
 );
 
@@ -21,12 +16,12 @@ const App = () => (
           <Link to="/">Overview</Link>
         </li>
         <li>
-          <Link to="/handle-items">Handle Items</Link>
+          <Link to="/handle-items">Handle transactions</Link>
         </li>
       </ul>
       <hr />
       <Route exact path="/" component={Overview} />
-      <Route path="/handle-items" component={HandleItems} />
+      <Route path="/handle-items" component={Transactions} />
     </div>
   </Router>
 );
