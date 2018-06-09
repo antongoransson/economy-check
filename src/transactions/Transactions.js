@@ -42,12 +42,12 @@ export const Transactions = ({
     >
       Add transaction
     </Button>
-    <List
+    {/* <List
       dataSource={allTransactions}
       renderItem={item => (
         <List.Item>{`${item.name}       ${item.cost}`}</List.Item>
       )}
-    />
+    /> */}
   </div>
 );
 

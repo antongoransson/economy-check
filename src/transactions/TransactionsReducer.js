@@ -5,9 +5,11 @@ const INITIAL_STATE = {
   allTransactions: []
 };
 
+type transactionType = { name: string, cost: number };
+
 type State = {
-  currentTransaction: { name: string, cost: number },
-  allTransactions: { name: string, cost: number }[]
+  currentTransaction: transactionType,
+  allTransactions: transactionType[]
 };
 
 const transactions = (
