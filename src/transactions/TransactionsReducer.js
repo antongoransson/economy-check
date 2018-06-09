@@ -1,13 +1,13 @@
 import { ADD_TRANSACTION, UPDATE_TRANSACTION } from './TransactionsTypes';
 
 const INITIAL_STATE = {
-  currentTransaction: {},
+  currentTransaction: { name: '', cost: 0 },
   allTransactions: []
 };
 
 type State = {
-  currentTransaction: { name?: string, cost?: number },
-  allTransactions: { name?: string, cost?: number }[]
+  currentTransaction: { name: string, cost: number },
+  allTransactions: { name: string, cost: number }[]
 };
 
 const transactions = (

@@ -2,6 +2,7 @@ import React from 'react';
 import { AutoComplete, Button, List } from 'antd';
 import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
+
 import {
   addTransaction as addT,
   updateTransaction as updateT
@@ -14,7 +15,7 @@ type Props = {
   addTransaction: (name: string, cost: number) => void
 };
 
-const Transactions = ({
+export const Transactions = ({
   currentTransaction,
   updateTransaction,
   addTransaction,
