@@ -10,16 +10,18 @@ import { ADD_TRANSACTION, UPDATE_TRANSACTION } from './TransactionsTypes';
 
 describe('Transactions tests', () => {
   const initialState = {
-    currentTransaction: { name: '', cost: 0 },
+    currentTransaction: { name: '', cost: 0, category: '' },
     allTransactions: []
   };
   const mockStore = configureStore([thunk]);
   const mockAddTransaction = jest.fn();
   const mockUpdateTransaction = jest.fn();
-  let store, wrapper, sWrapper;
+  let store, wrapper, sWrapper, defaultTransaction, newTransaction;
 
   beforeEach(() => {
     store = mockStore(initialState);
+    defaultTransaction = { name: 'ab', cost: 10, category: ' Food' };
+    newTransaction = { name: 'New', cost: 100, category: 'Cats' };
     wrapper = mount(
       <Provider store={store}>
         <Transactions
@@ -55,7 +57,7 @@ describe('Transactions tests', () => {
         .find('AutoComplete')
         .at(1)
         .props().value
-    ).toEqual(initialState.currentTransaction.cost);
+    ).toEqual(initialState.currentTransaction.cost || '');
   });
 
   it('check autocomplete calls prop functions', () => {
@@ -84,65 +86,67 @@ describe('Transactions tests', () => {
   });
 
   it('check action on dispatching ', () => {
-    store.dispatch(addTransaction('New', 10));
-    store.dispatch(updateTransaction('New', 10));
+    store.dispatch(addTransaction(defaultTransaction));
+    store.dispatch(
+      updateTransaction(
+        defaultTransaction.name,
+        defaultTransaction.cost,
+        defaultTransaction.category
+      )
+    );
     const action = store.getActions();
-    expect(action[0]).toEqual({ type: ADD_TRANSACTION, name: 'New', cost: 10 });
+    expect(action[0]).toEqual({
+      type: ADD_TRANSACTION,
+      transaction: defaultTransaction
+    });
     expect(action[1]).toEqual({
       type: UPDATE_TRANSACTION,
-      name: 'New',
-      cost: 10
+      ...defaultTransaction
     });
   });
 
   it('reducer for ADD_INPUT', () => {
-    const transaction = { name: 'ab', cost: 10 };
     let state = {
-      currentTransaction: transaction,
-      allTransactions: [transaction]
+      currentTransaction: defaultTransaction,
+      allTransactions: [defaultTransaction]
     };
     state = transactionsReducer(state, {
       type: ADD_TRANSACTION,
-      name: 'New',
-      cost: 100
+      transaction: newTransaction
     });
     expect(state).toEqual({
       currentTransaction: {},
-      allTransactions: [transaction, { name: 'New', cost: 100 }]
+      allTransactions: [defaultTransaction, newTransaction]
     });
   });
 
   it('reducer for UPDATE_TRANSACTION', () => {
-    const transaction = { name: 'ab', cost: 10 };
     let state = {
-      currentTransaction: transaction,
-      allTransactions: [transaction]
+      currentTransaction: defaultTransaction,
+      allTransactions: [defaultTransaction]
     };
     state = transactionsReducer(state, {
       type: UPDATE_TRANSACTION,
-      name: 'abc',
-      cost: 10
+      ...newTransaction
     });
     expect(state).toEqual({
-      currentTransaction: { name: 'abc', cost: 10 },
-      allTransactions: [transaction]
+      currentTransaction: newTransaction,
+      allTransactions: [defaultTransaction]
     });
   });
 
   it('reducer for default case', () => {
-    const transaction = { name: 'ab', cost: 10 };
     let state = {
-      currentTransaction: transaction,
-      allTransactions: [transaction]
+      currentTransaction: defaultTransaction,
+      allTransactions: [defaultTransaction]
     };
     state = transactionsReducer(state, {
       type: 'NON_EXISTING_TYPE',
-      name: 'abc',
-      cost: 10
+      ...newTransaction
     });
     expect(state).toEqual({
-      currentTransaction: transaction,
-      allTransactions: [transaction]
+      currentTransaction: defaultTransaction,
+      allTransactions: [defaultTransaction]
     });
   });
 

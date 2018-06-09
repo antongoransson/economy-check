@@ -1,19 +1,26 @@
 import React from 'react';
-import { AutoComplete, Button, List } from 'antd';
+import { AutoComplete, Button, Select, List } from 'antd';
 import { connect } from 'react-redux';
 import type { Dispatch } from 'redux';
-
+import { isEmpty } from 'lodash/fp';
 import {
   addTransaction as addT,
   updateTransaction as updateT
 } from './TransactionsActions';
 
+type transaction = { name: string, cost: number, category: string };
 type Props = {
-  allTransactions: { name: string, cost: number }[],
-  currentTransaction: { name: string, cost: number },
-  updateTransaction: (name: string, cost: number) => void,
-  addTransaction: (name: string, cost: number) => void
+  allTransactions: transaction[],
+  currentTransaction: transaction,
+  updateTransaction: (name: string, cost: number, category: string) => void,
+  addTransaction: transaction => void
 };
+
+const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
+const { Option } = Select;
+
+const isValid = (t: transaction) =>
+  Object.values(t).every(k => !isEmpty(k) && k !== 0);
 
 export const Transactions = ({
   currentTransaction,
@@ -24,30 +31,59 @@ export const Transactions = ({
   <div>
     <h3>Handle transactions</h3>
     <AutoComplete
-      onSearch={val => updateTransaction(val, currentTransaction.cost)}
+      onSearch={val =>
+        updateTransaction(
+          val,
+          currentTransaction.cost,
+          currentTransaction.category
+        )
+      }
       value={currentTransaction.name}
       autoFocus
-      placeholder="Enter name of transaction"
+      placeholder="Name"
     />
     <AutoComplete
-      onSearch={val => updateTransaction(currentTransaction.name, val)}
-      value={currentTransaction.cost}
-      placeholder="Enter cost of transaction"
+      onSearch={val =>
+        updateTransaction(
+          currentTransaction.name,
+          val,
+          currentTransaction.category
+        )
+      }
+      value={currentTransaction.cost || ''}
+      placeholder="Cost"
     />
+    <Select
+      showSearch
+      style={{ width: 200 }}
+      placeholder="Select category"
+      optionFilterProp="children"
+      onChange={val =>
+        updateTransaction(currentTransaction.name, currentTransaction.cost, val)
+      }
+      filterOption={(input, option) =>
+        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      }
+    >
+      {MOCK_CATEGORIES.map(c => (
+        <Option key={c} value={c.toLowerCase()}>
+          {c}
+        </Option>
+      ))}
+    </Select>
     <Button
       type="primary"
-      onClick={() =>
-        addTransaction(currentTransaction.name, currentTransaction.cost)
-      }
+      disabled={!isValid(currentTransaction)}
+      onClick={() => addTransaction(currentTransaction)}
     >
       Add transaction
     </Button>
-    {/* <List
+    <List
       dataSource={allTransactions}
       renderItem={item => (
         <List.Item>{`${item.name}       ${item.cost}`}</List.Item>
       )}
-    /> */}
+    />
   </div>
 );
 
@@ -56,8 +92,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<*>) => ({
-  updateTransaction: (name, cost) => dispatch(updateT(name, cost)),
-  addTransaction: (name, cost) => dispatch(addT(name, cost))
+  updateTransaction: (name, cost, category) =>
+    dispatch(updateT(name, cost, category)),
+  addTransaction: t => dispatch(addT(t))
 });
 
 export default connect(
