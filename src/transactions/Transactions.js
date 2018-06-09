@@ -1,8 +1,8 @@
 import React from 'react';
-import { AutoComplete, Button, Select, List } from 'antd';
 import { connect } from 'react-redux';
+import { AutoComplete, Button, List, Select } from 'antd';
 import type { Dispatch } from 'redux';
-import { isEmpty } from 'lodash/fp';
+import { isEmpty, isFinite } from 'lodash/fp';
 import {
   addTransaction as addT,
   updateTransaction as updateT
@@ -43,13 +43,14 @@ export const Transactions = ({
       placeholder="Name"
     />
     <AutoComplete
-      onSearch={val =>
-        updateTransaction(
-          currentTransaction.name,
-          val,
-          currentTransaction.category
-        )
-      }
+      onSearch={val => {
+        if (val && isFinite(Number(val.replace(',', '.'))))
+          updateTransaction(
+            currentTransaction.name,
+            val,
+            currentTransaction.category
+          );
+      }}
       value={currentTransaction.cost || ''}
       placeholder="Cost"
     />

@@ -73,7 +73,7 @@ describe('Transactions tests', () => {
       .at(1)
       .props()
       .onSearch();
-    expect(mockUpdateTransaction.mock.calls.length).toBe(2);
+    expect(mockUpdateTransaction.mock.calls.length).toBe(1);
   });
 
   it('check Button calls props addFunction', () => {
