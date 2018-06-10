@@ -28,16 +28,14 @@ describe('Transactions tests', () => {
     defaultTransaction = { name: 'ab', cost: 10, category: ' Food' };
     newTransaction = { name: 'New', cost: 100, category: 'Cats' };
     wrapper = mount(
-      <Provider store={store}>
-        <Transactions
-          currentTransaction={initialState.currentTransaction}
-          allTransactions={[]}
-          selectedCategory=""
-          updateTransaction={() => mockUpdateTransaction()}
-          addTransaction={() => mockAddTransaction()}
-          setSelectedCategory={() => mockSetSelectedCategory()}
-        />
-      </Provider>
+      <Transactions
+        currentTransaction={initialState.currentTransaction}
+        allTransactions={[]}
+        selectedCategory=""
+        updateTransaction={() => mockUpdateTransaction()}
+        addTransaction={() => mockAddTransaction()}
+        setSelectedCategory={() => mockSetSelectedCategory()}
+      />
     );
     sWrapper = shallow(<TransactionsContainer store={store} />);
   });
@@ -83,13 +81,25 @@ describe('Transactions tests', () => {
     expect(mockUpdateTransaction.mock.calls.length).toBe(1);
   });
 
-  it('check Button calls props addFunction', () => {
+  it('check addTransactionButton calls props addFunction', () => {
     expect(mockAddTransaction.mock.calls.length).toBe(0);
     wrapper
       .find('Button[id="addTransactionButton"]')
       .props()
       .onClick();
     expect(mockAddTransaction.mock.calls.length).toBe(1);
+  });
+
+  it('check addTransactionButton is correctly disabled', () => {
+    expect(
+      wrapper.find('Button[id="addTransactionButton"]').props().disabled
+    ).toBe(true);
+    const validTransaction = { name: 'Buss', cost: 10, category: 'Food' };
+    wrapper.setProps({ currentTransaction: validTransaction });
+
+    expect(
+      wrapper.find('Button[id="addTransactionButton"]').props().disabled
+    ).toBe(false);
   });
 
   it('check action on dispatching ', () => {

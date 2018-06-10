@@ -23,7 +23,7 @@ const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
 const { Option } = Select;
 
 const isValid = (t: transaction) =>
-  Object.values(t).every(k => !isEmpty(k) && k !== 0);
+  Object.values(t).every(k => (!isEmpty(k) || isFinite(k)) && k !== 0);
 
 export const Transactions = ({
   currentTransaction,
@@ -54,7 +54,9 @@ export const Transactions = ({
       style={{ width: 200 }}
       placeholder="Select category"
       optionFilterProp="children"
-      onChange={val => updateTransaction('category', val)}
+      onChange={val => 
+        updateTransaction('category', val)
+      }
       filterOption={(input, option) =>
         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
