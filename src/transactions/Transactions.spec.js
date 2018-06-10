@@ -4,8 +4,12 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import TransactionsContainer, { Transactions } from './Transactions';
-import { addTransaction, updateTransaction } from './TransactionsActions';
-import { ADD_TRANSACTION, UPDATE_TRANSACTION } from './TransactionsTypes';
+import {
+  addTransaction,
+  setSelectedCategory,
+  updateTransaction
+} from './TransactionsActions';
+import * as types from './TransactionsTypes';
 
 describe('Transactions tests', () => {
   const initialState = {
@@ -89,17 +93,23 @@ describe('Transactions tests', () => {
   });
 
   it('check action on dispatching ', () => {
+    const testCategory = 'Food';
     store.dispatch(addTransaction(defaultTransaction));
     store.dispatch(updateTransaction('name', defaultTransaction.name));
+    store.dispatch(setSelectedCategory(testCategory));
     const action = store.getActions();
     expect(action[0]).toEqual({
-      type: ADD_TRANSACTION,
+      type: types.ADD_TRANSACTION,
       transaction: defaultTransaction
     });
     expect(action[1]).toEqual({
-      type: UPDATE_TRANSACTION,
-      field:'name',
+      type: types.UPDATE_TRANSACTION,
+      field: 'name',
       value: defaultTransaction.name
+    });
+    expect(action[2]).toEqual({
+      type: types.SET_SELECTED_CATEGORY,
+      category: testCategory
     });
   });
 
@@ -110,8 +120,8 @@ describe('Transactions tests', () => {
 
     const actions = store.getActions();
     expect(actions).toEqual([
-      { type: UPDATE_TRANSACTION },
-      { type: ADD_TRANSACTION }
+      { type: types.UPDATE_TRANSACTION },
+      { type: types.ADD_TRANSACTION }
     ]);
   });
 });
