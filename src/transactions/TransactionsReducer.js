@@ -19,6 +19,8 @@ const transactions = (
     name?: string,
     cost?: number,
     category?: string,
+    field?: string,
+    value?: number | string,
     transaction?: transactionType
   }
 ) => {
@@ -30,15 +32,15 @@ const transactions = (
         allTransactions: [...state.allTransactions, action.transaction]
       };
     }
-    case types.UPDATE_TRANSACTION:
-      return {
-        ...state,
-        currentTransaction: {
-          name: action.name,
-          cost: action.cost,
-          category: action.category
-        }
-      };
+    case types.UPDATE_TRANSACTION: {
+      const newState = { ...state };
+      if (action.field)
+        newState.currentTransaction = {
+          ...state.currentTransaction,
+          [action.field]: action.value
+        };
+      return newState;
+    }
     case types.SET_SELECTED_CATEGORY:
       return { ...state, selectedCategory: action.category };
     default:
