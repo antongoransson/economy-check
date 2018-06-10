@@ -13,7 +13,7 @@ type transaction = { name: string, cost: number, category: string };
 type Props = {
   allTransactions: transaction[],
   currentTransaction: transaction,
-  updateTransaction: (name: string, cost: number, category: string) => void,
+  updateTransaction: (field: string, value: number | string) => void,
   addTransaction: transaction => void,
   selectedCategory: string,
   setSelectedCategory: string => void
@@ -36,13 +36,7 @@ export const Transactions = ({
   <div>
     <h3>Handle transactions</h3>
     <AutoComplete
-      onSearch={val =>
-        updateTransaction(
-          val,
-          currentTransaction.cost,
-          currentTransaction.category
-        )
-      }
+      onSearch={val => updateTransaction('name', val)}
       value={currentTransaction.name}
       autoFocus
       placeholder="Name"
@@ -50,11 +44,7 @@ export const Transactions = ({
     <AutoComplete
       onSearch={val => {
         if (val && isFinite(Number(val.replace(',', '.'))))
-          updateTransaction(
-            currentTransaction.name,
-            val,
-            currentTransaction.category
-          );
+          updateTransaction('cost', val);
       }}
       value={currentTransaction.cost || ''}
       placeholder="Cost"
@@ -64,9 +54,7 @@ export const Transactions = ({
       style={{ width: 200 }}
       placeholder="Select category"
       optionFilterProp="children"
-      onChange={val =>
-        updateTransaction(currentTransaction.name, currentTransaction.cost, val)
-      }
+      onChange={val => updateTransaction('category', val)}
       filterOption={(input, option) =>
         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
@@ -145,10 +133,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<*>) => ({
-  updateTransaction: (name, cost, category) =>
-    dispatch(updateT(name, cost, category)),
+  updateTransaction: (field, value) => dispatch(updateT(field, value)),
   addTransaction: t => dispatch(addT(t)),
-  setSelectedCategory: cate => dispatch(setSelectedCat(cate))
+  setSelectedCategory: cat => dispatch(setSelectedCat(cat))
 });
 
 export default connect(

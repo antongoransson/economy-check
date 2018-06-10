@@ -90,13 +90,7 @@ describe('Transactions tests', () => {
 
   it('check action on dispatching ', () => {
     store.dispatch(addTransaction(defaultTransaction));
-    store.dispatch(
-      updateTransaction(
-        defaultTransaction.name,
-        defaultTransaction.cost,
-        defaultTransaction.category
-      )
-    );
+    store.dispatch(updateTransaction('name', defaultTransaction.name));
     const action = store.getActions();
     expect(action[0]).toEqual({
       type: ADD_TRANSACTION,
@@ -104,7 +98,8 @@ describe('Transactions tests', () => {
     });
     expect(action[1]).toEqual({
       type: UPDATE_TRANSACTION,
-      ...defaultTransaction
+      field:'name',
+      value: defaultTransaction.name
     });
   });
 

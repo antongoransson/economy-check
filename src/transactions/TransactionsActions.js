@@ -6,15 +6,10 @@ export const addTransaction = (t: transactionType) => ({
   transaction: t
 });
 
-export const updateTransaction = (
-  name: string,
-  cost: number,
-  category: string
-) => ({
+export const updateTransaction = (field: string, value: number | string) => ({
   type: types.UPDATE_TRANSACTION,
-  name,
-  cost,
-  category
+  field,
+  value
 });
 
 export const setSelectedCategory = (category: string) => ({
