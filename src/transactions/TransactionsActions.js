@@ -6,7 +6,7 @@ export const addTransaction = (t: transactionType) => ({
   transaction: t
 });
 
-export const updateTransaction = (field: string, value: number | string) => ({
+export const updateTransaction = (field: string, value: string) => ({
   type: types.UPDATE_TRANSACTION,
   field,
   value

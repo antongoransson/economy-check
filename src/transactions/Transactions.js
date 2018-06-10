@@ -9,11 +9,11 @@ import {
   setSelectedCategory as setSelectedCat
 } from './TransactionsActions';
 
-type transaction = { name: string, cost: number, category: string };
+type transaction = { name: string, cost: string, category: string };
 type Props = {
   allTransactions: transaction[],
   currentTransaction: transaction,
-  updateTransaction: (field: string, value: number | string) => void,
+  updateTransaction: (field: string, value: string) => void,
   addTransaction: transaction => void,
   selectedCategory: string,
   setSelectedCategory: string => void
@@ -23,7 +23,7 @@ const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
 const { Option } = Select;
 
 const isValid = (t: transaction) =>
-  Object.values(t).every(k => (!isEmpty(k) || isFinite(k)) && k !== 0);
+  Object.values(t).every(k => !isEmpty(k) && k !== 0);
 
 export const Transactions = ({
   currentTransaction,
@@ -36,12 +36,14 @@ export const Transactions = ({
   <div>
     <h3>Handle transactions</h3>
     <AutoComplete
+      id="autoCompleteName"
       onSearch={val => updateTransaction('name', val)}
       value={currentTransaction.name}
       autoFocus
       placeholder="Name"
     />
     <AutoComplete
+      id="autoCompleteCost"
       onSearch={val => {
         if (val && isFinite(Number(val.replace(',', '.'))))
           updateTransaction('cost', val);
@@ -50,13 +52,12 @@ export const Transactions = ({
       placeholder="Cost"
     />
     <Select
+      id="transactionCategorySelect"
       showSearch
       style={{ width: 200 }}
       placeholder="Select category"
       optionFilterProp="children"
-      onChange={val => 
-        updateTransaction('category', val)
-      }
+      onChange={val => updateTransaction('category', val)}
       filterOption={(input, option) =>
         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
@@ -75,7 +76,7 @@ export const Transactions = ({
     >
       Add Transaction
     </Button>
-    <h3>Handle categories</h3>
+    {/* <h3>Handle categories</h3>
     <AutoComplete
       onSearch={val => console.log(val)}
       value="currentCategory"
@@ -84,6 +85,7 @@ export const Transactions = ({
     />
     <Button
       type="primary"
+      id="addCategoryButton"
       disabled={!isValid(currentTransaction)}
       onClick={() => addTransaction(currentTransaction)}
     >
@@ -108,6 +110,7 @@ export const Transactions = ({
       </Select>
       <Button
         type="primary"
+        id="editCategoryButton"
         disabled={isEmpty(selectedCategory)}
         onClick={() => console.log('Open popover')}
       >
@@ -115,8 +118,9 @@ export const Transactions = ({
       </Button>{' '}
       <Button
         type="primary"
+        id="deleteCategoryButton"
         disabled={isEmpty(selectedCategory)}
-        onClick={() => console.log('Remove cat')}
+        onClick={() => console.log('Delete cat')}
       >
         Delete
       </Button>
@@ -126,7 +130,7 @@ export const Transactions = ({
       renderItem={item => (
         <List.Item>{`${item.name}       ${item.cost}`}</List.Item>
       )}
-    />
+    /> */}
   </div>
 );
 

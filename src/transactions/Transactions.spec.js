@@ -13,20 +13,20 @@ import * as types from './TransactionsTypes';
 
 describe('Transactions tests', () => {
   const initialState = {
-    currentTransaction: { name: '', cost: 0, category: '' },
+    currentTransaction: { name: '', cost: '', category: '' },
     allTransactions: [],
     selectedCategory: ''
   };
   const mockStore = configureStore([thunk]);
-  const mockAddTransaction = jest.fn();
-  const mockUpdateTransaction = jest.fn();
-  const mockSetSelectedCategory = jest.fn();
   let store, wrapper, sWrapper, defaultTransaction, newTransaction;
-
+  let mockAddTransaction, mockUpdateTransaction, mockSetSelectedCategory;
   beforeEach(() => {
+    mockAddTransaction = jest.fn();
+    mockUpdateTransaction = jest.fn();
+    mockSetSelectedCategory = jest.fn();
     store = mockStore(initialState);
-    defaultTransaction = { name: 'ab', cost: 10, category: ' Food' };
-    newTransaction = { name: 'New', cost: 100, category: 'Cats' };
+    defaultTransaction = { name: 'ab', cost: '10', category: ' Food' };
+    newTransaction = { name: 'New', cost: '100', category: 'Cats' };
     wrapper = mount(
       <Transactions
         currentTransaction={initialState.currentTransaction}
@@ -52,36 +52,35 @@ describe('Transactions tests', () => {
 
   it('check autocomplete values matchers with redux state', () => {
     expect(
-      wrapper
-        .find('AutoComplete')
-        .at(0)
-        .props().value
+      wrapper.find('AutoComplete[id="autoCompleteName"]').props().value
     ).toEqual(initialState.currentTransaction.name);
     expect(
-      wrapper
-        .find('AutoComplete')
-        .at(1)
-        .props().value
+      wrapper.find('AutoComplete[id="autoCompleteCost"]').props().value
     ).toEqual(initialState.currentTransaction.cost || '');
   });
 
   it('check autocomplete calls prop functions', () => {
     expect(mockUpdateTransaction.mock.calls.length).toBe(0);
     wrapper
-      .find('AutoComplete')
-      .at(0)
+      .find('AutoComplete[id="autoCompleteName"]')
       .props()
       .onSearch();
     expect(mockUpdateTransaction.mock.calls.length).toBe(1);
+
     wrapper
-      .find('AutoComplete')
-      .at(1)
+      .find('AutoComplete[id="autoCompleteCost"]')
       .props()
-      .onSearch();
+      .onSearch('a');
     expect(mockUpdateTransaction.mock.calls.length).toBe(1);
+
+    wrapper
+      .find('AutoComplete[id="autoCompleteCost"]')
+      .props()
+      .onSearch('123');
+    expect(mockUpdateTransaction.mock.calls.length).toBe(2);
   });
 
-  it('check addTransactionButton calls props addFunction', () => {
+  it('check addTransactionButton calls props addFunction ', () => {
     expect(mockAddTransaction.mock.calls.length).toBe(0);
     wrapper
       .find('Button[id="addTransactionButton"]')
@@ -90,11 +89,21 @@ describe('Transactions tests', () => {
     expect(mockAddTransaction.mock.calls.length).toBe(1);
   });
 
+  it('check select propely calls props addFunction ', () => {
+    expect(mockUpdateTransaction.mock.calls.length).toBe(0);
+    wrapper
+      .find('Select[id="transactionCategorySelect"]')
+      .at(0)
+      .props()
+      .onChange();
+    expect(mockUpdateTransaction.mock.calls.length).toBe(1);
+  });
+
   it('check addTransactionButton is correctly disabled', () => {
     expect(
       wrapper.find('Button[id="addTransactionButton"]').props().disabled
     ).toBe(true);
-    const validTransaction = { name: 'Buss', cost: 10, category: 'Food' };
+    const validTransaction = { name: 'Buss', cost: '10', category: 'Food' };
     wrapper.setProps({ currentTransaction: validTransaction });
 
     expect(
@@ -127,11 +136,12 @@ describe('Transactions tests', () => {
     // test that the component events dispatch the expected actions
     sWrapper.props().updateTransaction();
     sWrapper.props().addTransaction();
-
+    sWrapper.props().setSelectedCategory();
     const actions = store.getActions();
     expect(actions).toEqual([
       { type: types.UPDATE_TRANSACTION },
-      { type: types.ADD_TRANSACTION }
+      { type: types.ADD_TRANSACTION },
+      { type: types.SET_SELECTED_CATEGORY }
     ]);
   });
 });

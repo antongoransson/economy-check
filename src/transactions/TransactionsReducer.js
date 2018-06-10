@@ -2,7 +2,7 @@ import * as types from './TransactionsTypes';
 import type { transactionType } from './TransactionsTypes';
 
 const INITIAL_STATE = {
-  currentTransaction: { name: '', cost: 0, category: '' },
+  currentTransaction: { name: '', cost: '', category: '' },
   allTransactions: [],
   selectedCategory: ''
 };
@@ -17,7 +17,7 @@ const transactions = (
   action: {
     type: string,
     name?: string,
-    cost?: number,
+    cost?: string,
     category?: string,
     field?: string,
     value?: number | string,

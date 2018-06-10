@@ -5,7 +5,7 @@ import * as types from './TransactionsTypes';
 
 describe('Transactions tests', () => {
   const initialState = {
-    currentTransaction: { name: '', cost: 0, category: '' },
+    currentTransaction: { name: '', cost: '', category: '' },
     allTransactions: [],
     selectedCategory: ''
   };
@@ -14,8 +14,8 @@ describe('Transactions tests', () => {
 
   beforeEach(() => {
     store = mockStore(initialState);
-    defaultTransaction = { name: 'ab', cost: 10, category: ' Food' };
-    newTransaction = { name: 'New', cost: 100, category: 'Cats' };
+    defaultTransaction = { name: 'ab', cost: '10', category: ' Food' };
+    newTransaction = { name: 'New', cost: '100', category: 'Cats' };
     state = {
       currentTransaction: defaultTransaction,
       allTransactions: [defaultTransaction],
