@@ -7,14 +7,12 @@ import './index.css';
 import App from './app/App';
 import registerServiceWorker from './registerServiceWorker';
 
-const root: ?Element = document.getElementById('root');
+const Index = render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root') || document.createElement('div')
+);
+registerServiceWorker();
 
-if (root != null) {
-  render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
-    root
-  );
-  registerServiceWorker();
-}
+export default Index;
