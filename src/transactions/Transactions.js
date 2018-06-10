@@ -5,7 +5,8 @@ import type { Dispatch } from 'redux';
 import { isEmpty, isFinite } from 'lodash/fp';
 import {
   addTransaction as addT,
-  updateTransaction as updateT
+  updateTransaction as updateT,
+  setSelectedCategory as setSelectedCat
 } from './TransactionsActions';
 
 type transaction = { name: string, cost: number, category: string };
@@ -13,7 +14,9 @@ type Props = {
   allTransactions: transaction[],
   currentTransaction: transaction,
   updateTransaction: (name: string, cost: number, category: string) => void,
-  addTransaction: transaction => void
+  addTransaction: transaction => void,
+  selectedCategory: string,
+  setSelectedCategory: string => void
 };
 
 const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
@@ -26,7 +29,9 @@ export const Transactions = ({
   currentTransaction,
   updateTransaction,
   addTransaction,
-  allTransactions
+  allTransactions,
+  selectedCategory,
+  setSelectedCategory
 }: Props) => (
   <div>
     <h3>Handle transactions</h3>
@@ -74,11 +79,58 @@ export const Transactions = ({
     </Select>
     <Button
       type="primary"
+      id="addTransactionButton"
       disabled={!isValid(currentTransaction)}
       onClick={() => addTransaction(currentTransaction)}
     >
-      Add transaction
+      Add Transaction
     </Button>
+    <h3>Handle categories</h3>
+    <AutoComplete
+      onSearch={val => console.log(val)}
+      value="currentCategory"
+      autoFocus
+      placeholder="Name"
+    />
+    <Button
+      type="primary"
+      disabled={!isValid(currentTransaction)}
+      onClick={() => addTransaction(currentTransaction)}
+    >
+      Add Category
+    </Button>
+    <div>
+      <Select
+        showSearch
+        style={{ width: 200 }}
+        placeholder="Select category"
+        optionFilterProp="children"
+        onChange={val => setSelectedCategory(val)}
+        filterOption={(input, option) =>
+          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
+      >
+        {MOCK_CATEGORIES.map(c => (
+          <Option key={c} value={c.toLowerCase()}>
+            {c}
+          </Option>
+        ))}
+      </Select>
+      <Button
+        type="primary"
+        disabled={isEmpty(selectedCategory)}
+        onClick={() => console.log('Open popover')}
+      >
+        Edit
+      </Button>{' '}
+      <Button
+        type="primary"
+        disabled={isEmpty(selectedCategory)}
+        onClick={() => console.log('Remove cat')}
+      >
+        Delete
+      </Button>
+    </div>
     <List
       dataSource={allTransactions}
       renderItem={item => (
@@ -95,7 +147,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch: Dispatch<*>) => ({
   updateTransaction: (name, cost, category) =>
     dispatch(updateT(name, cost, category)),
-  addTransaction: t => dispatch(addT(t))
+  addTransaction: t => dispatch(addT(t)),
+  setSelectedCategory: cate => dispatch(setSelectedCat(cate))
 });
 
 export default connect(

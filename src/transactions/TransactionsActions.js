@@ -1,8 +1,8 @@
-import { ADD_TRANSACTION, UPDATE_TRANSACTION } from './TransactionsTypes';
+import * as types from './TransactionsTypes';
 import type { transactionType } from './TransactionsTypes';
 
 export const addTransaction = (t: transactionType) => ({
-  type: ADD_TRANSACTION,
+  type: types.ADD_TRANSACTION,
   transaction: t
 });
 
@@ -11,8 +11,13 @@ export const updateTransaction = (
   cost: number,
   category: string
 ) => ({
-  type: UPDATE_TRANSACTION,
+  type: types.UPDATE_TRANSACTION,
   name,
   cost,
+  category
+});
+
+export const setSelectedCategory = (category: string) => ({
+  type: types.SET_SELECTED_CATEGORY,
   category
 });

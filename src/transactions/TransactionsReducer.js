@@ -1,9 +1,10 @@
-import { ADD_TRANSACTION, UPDATE_TRANSACTION } from './TransactionsTypes';
+import * as types from './TransactionsTypes';
 import type { transactionType } from './TransactionsTypes';
 
 const INITIAL_STATE = {
   currentTransaction: { name: '', cost: 0, category: '' },
-  allTransactions: []
+  allTransactions: [],
+  selectedCategory: ''
 };
 
 type State = {
@@ -22,14 +23,14 @@ const transactions = (
   }
 ) => {
   switch (action.type) {
-    case ADD_TRANSACTION: {
+    case types.ADD_TRANSACTION: {
       return {
         ...state,
         currentTransaction: {},
         allTransactions: [...state.allTransactions, action.transaction]
       };
     }
-    case UPDATE_TRANSACTION:
+    case types.UPDATE_TRANSACTION:
       return {
         ...state,
         currentTransaction: {
@@ -38,6 +39,8 @@ const transactions = (
           category: action.category
         }
       };
+    case types.SET_SELECTED_CATEGORY:
+      return { ...state, selectedCategory: action.category };
     default:
       return state;
   }

@@ -5,17 +5,18 @@ import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import TransactionsContainer, { Transactions } from './Transactions';
 import { addTransaction, updateTransaction } from './TransactionsActions';
-import transactionsReducer from './TransactionsReducer';
 import { ADD_TRANSACTION, UPDATE_TRANSACTION } from './TransactionsTypes';
 
 describe('Transactions tests', () => {
   const initialState = {
     currentTransaction: { name: '', cost: 0, category: '' },
-    allTransactions: []
+    allTransactions: [],
+    selectedCategory: ''
   };
   const mockStore = configureStore([thunk]);
   const mockAddTransaction = jest.fn();
   const mockUpdateTransaction = jest.fn();
+  const mockSetSelectedCategory = jest.fn();
   let store, wrapper, sWrapper, defaultTransaction, newTransaction;
 
   beforeEach(() => {
@@ -27,8 +28,10 @@ describe('Transactions tests', () => {
         <Transactions
           currentTransaction={initialState.currentTransaction}
           allTransactions={[]}
+          selectedCategory=""
           updateTransaction={() => mockUpdateTransaction()}
           addTransaction={() => mockAddTransaction()}
+          setSelectedCategory={() => mockSetSelectedCategory()}
         />
       </Provider>
     );
@@ -79,7 +82,7 @@ describe('Transactions tests', () => {
   it('check Button calls props addFunction', () => {
     expect(mockAddTransaction.mock.calls.length).toBe(0);
     wrapper
-      .find('Button')
+      .find('Button[id="addTransactionButton"]')
       .props()
       .onClick();
     expect(mockAddTransaction.mock.calls.length).toBe(1);
@@ -102,51 +105,6 @@ describe('Transactions tests', () => {
     expect(action[1]).toEqual({
       type: UPDATE_TRANSACTION,
       ...defaultTransaction
-    });
-  });
-
-  it('reducer for ADD_INPUT', () => {
-    let state = {
-      currentTransaction: defaultTransaction,
-      allTransactions: [defaultTransaction]
-    };
-    state = transactionsReducer(state, {
-      type: ADD_TRANSACTION,
-      transaction: newTransaction
-    });
-    expect(state).toEqual({
-      currentTransaction: {},
-      allTransactions: [defaultTransaction, newTransaction]
-    });
-  });
-
-  it('reducer for UPDATE_TRANSACTION', () => {
-    let state = {
-      currentTransaction: defaultTransaction,
-      allTransactions: [defaultTransaction]
-    };
-    state = transactionsReducer(state, {
-      type: UPDATE_TRANSACTION,
-      ...newTransaction
-    });
-    expect(state).toEqual({
-      currentTransaction: newTransaction,
-      allTransactions: [defaultTransaction]
-    });
-  });
-
-  it('reducer for default case', () => {
-    let state = {
-      currentTransaction: defaultTransaction,
-      allTransactions: [defaultTransaction]
-    };
-    state = transactionsReducer(state, {
-      type: 'NON_EXISTING_TYPE',
-      ...newTransaction
-    });
-    expect(state).toEqual({
-      currentTransaction: defaultTransaction,
-      allTransactions: [defaultTransaction]
     });
   });
 
