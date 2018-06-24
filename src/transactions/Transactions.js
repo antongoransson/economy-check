@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { AutoComplete, Button, List, Select } from 'antd';
-import type { Dispatch } from 'redux';
 import { isEmpty, isFinite } from 'lodash/fp';
 import {
   addTransaction as addT,
@@ -45,7 +44,7 @@ export const Transactions = ({
     <AutoComplete
       id="autoCompleteCost"
       onSearch={val => {
-        if (val && isFinite(Number(val.replace(',', '.'))))
+        if ((val && isFinite(Number(val.replace(',', '.')))) || val === '')
           updateTransaction('cost', val);
       }}
       value={currentTransaction.cost || ''}
@@ -138,11 +137,11 @@ const mapStateToProps = state => ({
   ...state.transactions
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<*>) => ({
-  updateTransaction: (field, value) => dispatch(updateT(field, value)),
-  addTransaction: t => dispatch(addT(t)),
-  setSelectedCategory: cat => dispatch(setSelectedCat(cat))
-});
+const mapDispatchToProps = {
+  updateTransaction: updateT,
+  addTransaction: addT,
+  setSelectedCategory: setSelectedCat
+};
 
 export default connect(
   mapStateToProps,

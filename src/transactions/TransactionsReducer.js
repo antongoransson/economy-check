@@ -12,18 +12,17 @@ type State = {
   allTransactions: transactionType[]
 };
 
-const transactions = (
-  state: State = INITIAL_STATE,
-  action: {
-    type: string,
-    name?: string,
-    cost?: string,
-    category?: string,
-    field?: string,
-    value?: number | string,
-    transaction?: transactionType
-  }
-) => {
+type Action = {
+  type: string,
+  name?: string,
+  cost?: string,
+  category?: string,
+  field?: string,
+  value?: number | string,
+  transaction?: transactionType
+};
+
+const transactions = (state: State = INITIAL_STATE, action: Action) => {
   switch (action.type) {
     case types.ADD_TRANSACTION: {
       return {
