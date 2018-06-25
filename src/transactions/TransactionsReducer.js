@@ -4,12 +4,15 @@ import type { transactionType } from './TransactionsTypes';
 const INITIAL_STATE = {
   currentTransaction: { name: '', cost: '', category: '' },
   allTransactions: [],
-  selectedCategory: ''
+  selectedCategory: '',
+  currentCategory: ''
 };
 
 type State = {
+  allTransactions: transactionType[],
+  currentCategory: string,
   currentTransaction: transactionType,
-  allTransactions: transactionType[]
+  selectedCategory: string
 };
 
 type Action = {
@@ -42,6 +45,8 @@ const transactions = (state: State = INITIAL_STATE, action: Action) => {
     }
     case types.SET_SELECTED_CATEGORY:
       return { ...state, selectedCategory: action.category };
+    case types.UPDATE_CATEGORY:
+      return { ...state, currentCategory: action.value };
     default:
       return state;
   }

@@ -5,6 +5,7 @@ import { isEmpty, isFinite } from 'lodash/fp';
 import {
   addTransaction as addT,
   updateTransaction as updateT,
+  updateCategory as updateCat,
   setSelectedCategory as setSelectedCat
 } from './TransactionsActions';
 
@@ -12,10 +13,12 @@ type transaction = { name: string, cost: string, category: string };
 type Props = {
   allTransactions: transaction[],
   currentTransaction: transaction,
+  currentCategory: string,
   updateTransaction: (field: string, value: string) => void,
   addTransaction: transaction => void,
   selectedCategory: string,
-  setSelectedCategory: string => void
+  setSelectedCategory: string => void,
+  updateCategory: string => void
 };
 
 const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
@@ -25,12 +28,14 @@ const isValid = (t: transaction) =>
   Object.values(t).every(k => !isEmpty(k) && k !== 0);
 
 export const Transactions = ({
-  currentTransaction,
-  updateTransaction,
   addTransaction,
   allTransactions,
+  currentTransaction,
+  currentCategory,
   selectedCategory,
-  setSelectedCategory
+  setSelectedCategory,
+  updateCategory,
+  updateTransaction
 }: Props) => (
   <div>
     <h3>Handle transactions</h3>
@@ -44,6 +49,7 @@ export const Transactions = ({
     <AutoComplete
       id="autoCompleteCost"
       onSearch={val => {
+        // Should be possible to write floats with either comma or dot
         if ((val && isFinite(Number(val.replace(',', '.')))) || val === '')
           updateTransaction('cost', val);
       }}
@@ -75,14 +81,15 @@ export const Transactions = ({
     >
       Add Transaction
     </Button>
-    {/* <h3>Handle categories</h3>
+    <h3>Handle categories</h3>
     <AutoComplete
-      onSearch={val => console.log(val)}
-      value="currentCategory"
+      id="autoCompleteCategory"
+      onSearch={val => updateCategory(val)}
+      value={currentCategory}
       autoFocus
       placeholder="Name"
     />
-    <Button
+    {/* <Button
       type="primary"
       id="addCategoryButton"
       disabled={!isValid(currentTransaction)}
@@ -138,9 +145,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  updateTransaction: updateT,
   addTransaction: addT,
-  setSelectedCategory: setSelectedCat
+  setSelectedCategory: setSelectedCat,
+  updateCategory: updateCat,
+  updateTransaction: updateT
 };
 
 export default connect(

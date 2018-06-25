@@ -16,3 +16,8 @@ export const setSelectedCategory = (category: string) => ({
   type: types.SET_SELECTED_CATEGORY,
   category
 });
+
+export const updateCategory = (value: string) => ({
+  type: types.UPDATE_CATEGORY,
+  value
+});

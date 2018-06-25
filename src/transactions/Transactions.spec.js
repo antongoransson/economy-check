@@ -13,28 +13,35 @@ import * as types from './TransactionsTypes';
 
 describe('Transactions tests', () => {
   const initialState = {
-    currentTransaction: { name: '', cost: '', category: '' },
     allTransactions: [],
+    currentCategory: '',
+    currentTransaction: { name: '', cost: '', category: '' },
     selectedCategory: ''
   };
   const mockStore = configureStore([thunk]);
   let store, wrapper, sWrapper, defaultTransaction, newTransaction;
-  let mockAddTransaction, mockUpdateTransaction, mockSetSelectedCategory;
+  let mockAddTransaction,
+    mockUpdateTransaction,
+    mockSetSelectedCategory,
+    mockUpdateCategory;
   beforeEach(() => {
     mockAddTransaction = jest.fn();
     mockUpdateTransaction = jest.fn();
     mockSetSelectedCategory = jest.fn();
+    mockUpdateCategory = jest.fn();
     store = mockStore(initialState);
     defaultTransaction = { name: 'ab', cost: '10', category: ' Food' };
     newTransaction = { name: 'New', cost: '100', category: 'Cats' };
     wrapper = mount(
       <Transactions
         currentTransaction={initialState.currentTransaction}
+        currentCategory={initialState.currentCategory}
         allTransactions={[]}
         selectedCategory=""
-        updateTransaction={() => mockUpdateTransaction()}
         addTransaction={() => mockAddTransaction()}
         setSelectedCategory={() => mockSetSelectedCategory()}
+        updateTransaction={() => mockUpdateTransaction()}
+        updateCategory={() => mockUpdateCategory()}
       />
     );
     sWrapper = shallow(<TransactionsContainer store={store} />);
@@ -57,6 +64,9 @@ describe('Transactions tests', () => {
     expect(
       wrapper.find('AutoComplete[id="autoCompleteCost"]').props().value
     ).toEqual(initialState.currentTransaction.cost || '');
+    expect(
+      wrapper.find('AutoComplete[id="autoCompleteCategory"]').props().value
+    ).toEqual(initialState.currentTransaction.cost || '');
   });
 
   it('check autocomplete calls prop functions', () => {
@@ -78,6 +88,12 @@ describe('Transactions tests', () => {
       .props()
       .onSearch('123');
     expect(mockUpdateTransaction.mock.calls.length).toBe(2);
+
+    wrapper
+      .find('AutoComplete[id="autoCompleteCategory"]')
+      .props()
+      .onSearch('123');
+    expect(mockUpdateCategory.mock.calls.length).toBe(1);
   });
 
   it('check addTransactionButton calls props addFunction ', () => {
@@ -137,11 +153,13 @@ describe('Transactions tests', () => {
     sWrapper.props().updateTransaction();
     sWrapper.props().addTransaction();
     sWrapper.props().setSelectedCategory();
+    sWrapper.props().updateCategory();
     const actions = store.getActions();
     expect(actions).toEqual([
       { type: types.UPDATE_TRANSACTION },
       { type: types.ADD_TRANSACTION },
-      { type: types.SET_SELECTED_CATEGORY }
+      { type: types.SET_SELECTED_CATEGORY },
+      { type: types.UPDATE_CATEGORY }
     ]);
   });
 });

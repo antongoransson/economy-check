@@ -7,7 +7,8 @@ describe('Transactions tests', () => {
   const initialState = {
     currentTransaction: { name: '', cost: '', category: '' },
     allTransactions: [],
-    selectedCategory: ''
+    selectedCategory: '',
+    currentCategory: ''
   };
   const mockStore = configureStore([thunk]);
   let store, defaultTransaction, newTransaction, state;
@@ -19,9 +20,11 @@ describe('Transactions tests', () => {
     state = {
       currentTransaction: defaultTransaction,
       allTransactions: [defaultTransaction],
-      selectedCategory: ''
+      selectedCategory: '',
+      currentCategory: ''
     };
   });
+
   it('should have initial state', () => {
     expect(transactionsReducer(undefined, { type: 'UNDEFINED_TYPE' })).toEqual(
       initialState
@@ -70,8 +73,7 @@ describe('Transactions tests', () => {
       category: testCategory
     });
     expect(newState).toEqual({
-      currentTransaction: defaultTransaction,
-      allTransactions: [defaultTransaction],
+      ...state,
       selectedCategory: testCategory
     });
   });
@@ -83,5 +85,14 @@ describe('Transactions tests', () => {
       value: testValue
     });
     expect(newState).toEqual(state);
+  });
+
+  it('reducer UPDATE_CATEGORY should update current category', () => {
+    const testValue = 'Fishing';
+    const newState = transactionsReducer(state, {
+      type: types.UPDATE_CATEGORY,
+      value: testValue
+    });
+    expect(newState).toEqual({ ...state, currentCategory: testValue });
   });
 });
