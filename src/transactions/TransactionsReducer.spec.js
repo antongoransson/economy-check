@@ -89,7 +89,7 @@ describe('Transactions tests', () => {
     const testCategory = 'Food';
     const newState = transactionsReducer(state, {
       type: types.SET_SELECTED_CATEGORY,
-      category: testCategory
+      value: testCategory
     });
     expect(newState).toEqual({
       ...state,

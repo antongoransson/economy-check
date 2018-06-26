@@ -1,9 +1,9 @@
 import * as types from './TransactionsTypes';
 import type { transactionType } from './TransactionsTypes';
 
-export const addTransaction = (t: transactionType) => ({
+export const addTransaction = (transaction: transactionType) => ({
   type: types.ADD_TRANSACTION,
-  transaction: t
+  transaction
 });
 
 export const updateTransaction = (field: string, value: string) => ({
@@ -12,9 +12,9 @@ export const updateTransaction = (field: string, value: string) => ({
   value
 });
 
-export const setSelectedCategory = (category: string) => ({
+export const setSelectedCategory = (value: string) => ({
   type: types.SET_SELECTED_CATEGORY,
-  category
+  value
 });
 
 export const updateCategory = (value: string) => ({

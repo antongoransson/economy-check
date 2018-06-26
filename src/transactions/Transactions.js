@@ -3,29 +3,25 @@ import { connect } from 'react-redux';
 import { AutoComplete, Button, DatePicker, List, Select } from 'antd';
 import { isEmpty, isFinite } from 'lodash/fp';
 import moment from 'moment';
-import {
-  addTransaction as addT,
-  updateTransaction as updateT,
-  updateCategory as updateCat,
-  setSelectedCategory as setSelectedCat
-} from './TransactionsActions';
+import type Moment from 'moment';
+import * as actions from './TransactionsActions';
 import type { transactionType } from './TransactionsTypes';
 
 type Props = {
+  addTransaction: transactionType => void,
   allTransactions: transactionType[],
   currentTransaction: transactionType,
   currentCategory: string,
-  updateTransaction: (field: string, value: string) => void,
-  addTransaction: transactionType => void,
   selectedCategory: string,
   setSelectedCategory: string => void,
-  updateCategory: string => void
+  updateCategory: string => void,
+  updateTransaction: (field: string, value: string) => void
 };
 
 const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
 const { Option } = Select;
 
-const isValid = (t: transactionType) =>
+const isValid: transactionType => boolean = (t: transactionType) =>
   Object.values(t).every(k => !isEmpty(k) && k !== 0);
 
 export const Transactions = ({
@@ -42,14 +38,14 @@ export const Transactions = ({
     <h3>Handle transactions</h3>
     <AutoComplete
       id="autoCompleteName"
-      onSearch={val => updateTransaction('name', val)}
+      onSearch={(val: string) => updateTransaction('name', val)}
       value={currentTransaction.name}
       autoFocus
       placeholder="Name"
     />
     <AutoComplete
       id="autoCompleteCost"
-      onSearch={val => {
+      onSearch={(val: string) => {
         // Should be possible to write floats with either comma or dot
         if ((val && isFinite(Number(val.replace(',', '.')))) || val === '')
           updateTransaction('cost', val);
@@ -63,7 +59,7 @@ export const Transactions = ({
       style={{ width: 200 }}
       placeholder="Select category"
       optionFilterProp="children"
-      onChange={val => updateTransaction('category', val)}
+      onChange={(val: string) => updateTransaction('category', val)}
       filterOption={(input, option) =>
         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
       }
@@ -76,7 +72,9 @@ export const Transactions = ({
     </Select>
     <DatePicker
       allowClear={false}
-      onChange={date => updateTransaction('date', date)}
+      onChange={(date: Moment) =>
+        updateTransaction('date', moment(date).format('YYYY-MM-DD'))
+      }
       value={moment(currentTransaction.date)}
     />
     <Button
@@ -90,7 +88,7 @@ export const Transactions = ({
     <h3>Handle categories</h3>
     <AutoComplete
       id="autoCompleteCategory"
-      onSearch={val => updateCategory(val)}
+      onSearch={(val: string) => updateCategory(val)}
       value={currentCategory}
       placeholder="Name"
     />
@@ -135,13 +133,16 @@ export const Transactions = ({
       >
         Delete
       </Button>
-    </div>
+      </div> */}
+    <h3>Transactions</h3>
     <List
       dataSource={allTransactions}
       renderItem={item => (
-        <List.Item>{`${item.name}       ${item.cost}`}</List.Item>
+        <List.Item>{`${item.name}       ${item.cost}       ${
+          item.category
+        }       ${item.date}`}</List.Item>
       )}
-    /> */}
+    />
   </div>
 );
 
@@ -150,10 +151,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-  addTransaction: addT,
-  setSelectedCategory: setSelectedCat,
-  updateCategory: updateCat,
-  updateTransaction: updateT
+  addTransaction: actions.addTransaction,
+  setSelectedCategory: actions.setSelectedCategory,
+  updateCategory: actions.updateCategory,
+  updateTransaction: actions.updateTransaction
 };
 
 export default connect(

@@ -108,7 +108,7 @@ describe('Transactions tests', () => {
     wrapper
       .find(DatePicker)
       .props()
-      .onChange('123');
+      .onChange(moment());
     expect(mockUpdateTransaction.mock.calls.length).toBe(3);
 
     wrapper
@@ -131,7 +131,7 @@ describe('Transactions tests', () => {
     expect(mockUpdateTransaction.mock.calls.length).toBe(0);
     wrapper
       .find('Select[id="transactionCategorySelect"]')
-      .at(1)
+      .at(1) // I think this has something to do with antd select, should be removed
       .props()
       .onChange();
     expect(mockUpdateTransaction.mock.calls.length).toBe(1);
@@ -141,7 +141,12 @@ describe('Transactions tests', () => {
     expect(
       wrapper.find('Button[id="addTransactionButton"]').props().disabled
     ).toBe(true);
-    const validTransaction = { name: 'Buss', cost: '10', category: 'Food' };
+    const validTransaction: types.transactionType = {
+      name: 'Buss',
+      cost: '10',
+      category: 'Food',
+      date: '2017-08-12'
+    };
     wrapper.setProps({ currentTransaction: validTransaction });
 
     expect(
@@ -166,8 +171,14 @@ describe('Transactions tests', () => {
     });
     expect(action[2]).toEqual({
       type: types.SET_SELECTED_CATEGORY,
-      category: testCategory
+      value: testCategory
     });
+  });
+
+  it('check transaction list contains allTransactions', () => {
+    expect(wrapper.find('List').prop('dataSource')).toEqual(
+      initialState.allTransactions
+    );
   });
 
   it('should call actions from prop functions', () => {

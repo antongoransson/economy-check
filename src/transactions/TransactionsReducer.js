@@ -2,7 +2,13 @@ import moment from 'moment';
 import * as types from './TransactionsTypes';
 import type { transactionType } from './TransactionsTypes';
 
-const INITIAL_STATE = {
+type State = {
+  allTransactions: transactionType[],
+  currentCategory: string,
+  currentTransaction: transactionType,
+  selectedCategory: string
+};
+const INITIAL_STATE: State = {
   currentTransaction: {
     name: '',
     cost: '',
@@ -14,18 +20,8 @@ const INITIAL_STATE = {
   currentCategory: ''
 };
 
-type State = {
-  allTransactions: transactionType[],
-  currentCategory: string,
-  currentTransaction: transactionType,
-  selectedCategory: string
-};
-
 type Action = {
   type: string,
-  name?: string,
-  cost?: string,
-  category?: string,
   field?: string,
   value?: number | string,
   transaction?: transactionType
@@ -41,7 +37,7 @@ const transactions = (state: State = INITIAL_STATE, action: Action) => {
       };
     }
     case types.UPDATE_TRANSACTION: {
-      const newState = { ...state };
+      const newState: State = { ...state };
       if (action.field)
         newState.currentTransaction = {
           ...state.currentTransaction,
@@ -50,7 +46,7 @@ const transactions = (state: State = INITIAL_STATE, action: Action) => {
       return newState;
     }
     case types.SET_SELECTED_CATEGORY:
-      return { ...state, selectedCategory: action.category };
+      return { ...state, selectedCategory: action.value };
     case types.UPDATE_CATEGORY:
       return { ...state, currentCategory: action.value };
     default:
