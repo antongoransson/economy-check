@@ -10,11 +10,13 @@ export type Props = {
   currentTransaction: transactionType,
   updateTransaction: (field: string, value: string) => void
 };
+
 const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
 const { Option } = Select;
 
 const isValid: transactionType => boolean = (t: transactionType) =>
   Object.values(t).every(k => !isEmpty(k) && k !== 0);
+
 const TransactionForm = ({
   currentTransaction,
   updateTransaction,

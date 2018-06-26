@@ -67,8 +67,9 @@ describe('Transactions tests', () => {
     wrapper
       .find('AutoComplete[id="autoCompleteName"]')
       .props()
-      .onSearch();
+      .onSearch('Abc');
     expect(mockUpdateTransaction.mock.calls.length).toBe(1);
+    expect(mockUpdateTransaction).toHaveBeenLastCalledWith('name', 'Abc');
 
     wrapper
       .find('AutoComplete[id="autoCompleteCost"]')
@@ -81,12 +82,17 @@ describe('Transactions tests', () => {
       .props()
       .onSearch('123');
     expect(mockUpdateTransaction.mock.calls.length).toBe(2);
+    expect(mockUpdateTransaction).toHaveBeenLastCalledWith('cost', '123');
 
     wrapper
       .find(DatePicker)
       .props()
       .onChange(moment());
     expect(mockUpdateTransaction.mock.calls.length).toBe(3);
+    expect(mockUpdateTransaction).toHaveBeenCalledWith(
+      'date',
+      moment().format('YYYY-MM-DD')
+    );
   });
 
   it('check addTransactionButton calls props addFunction ', () => {
@@ -106,8 +112,9 @@ describe('Transactions tests', () => {
       .find('Select[id="transactionCategorySelect"]')
       .at(1) // I think this has something to do with antd select, should be removed
       .props()
-      .onChange();
+      .onChange('Sport');
     expect(mockUpdateTransaction.mock.calls.length).toBe(1);
+    expect(mockUpdateTransaction).toHaveBeenCalledWith('category', 'Sport');
   });
 
   it('check addTransactionButton is correctly disabled', () => {
