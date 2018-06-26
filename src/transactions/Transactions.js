@@ -1,21 +1,22 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { AutoComplete, Button, List, Select } from 'antd';
+import { AutoComplete, Button, DatePicker, List, Select } from 'antd';
 import { isEmpty, isFinite } from 'lodash/fp';
+import moment from 'moment';
 import {
   addTransaction as addT,
   updateTransaction as updateT,
   updateCategory as updateCat,
   setSelectedCategory as setSelectedCat
 } from './TransactionsActions';
+import type { transactionType } from './TransactionsTypes';
 
-type transaction = { name: string, cost: string, category: string };
 type Props = {
-  allTransactions: transaction[],
-  currentTransaction: transaction,
+  allTransactions: transactionType[],
+  currentTransaction: transactionType,
   currentCategory: string,
   updateTransaction: (field: string, value: string) => void,
-  addTransaction: transaction => void,
+  addTransaction: transactionType => void,
   selectedCategory: string,
   setSelectedCategory: string => void,
   updateCategory: string => void
@@ -24,7 +25,7 @@ type Props = {
 const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
 const { Option } = Select;
 
-const isValid = (t: transaction) =>
+const isValid = (t: transactionType) =>
   Object.values(t).every(k => !isEmpty(k) && k !== 0);
 
 export const Transactions = ({
@@ -73,6 +74,11 @@ export const Transactions = ({
         </Option>
       ))}
     </Select>
+    <DatePicker
+      allowClear={false}
+      onChange={date => updateTransaction('date', date)}
+      value={moment(currentTransaction.date)}
+    />
     <Button
       type="primary"
       id="addTransactionButton"
@@ -86,7 +92,6 @@ export const Transactions = ({
       id="autoCompleteCategory"
       onSearch={val => updateCategory(val)}
       value={currentCategory}
-      autoFocus
       placeholder="Name"
     />
     {/* <Button

@@ -1,8 +1,14 @@
+import moment from 'moment';
 import * as types from './TransactionsTypes';
 import type { transactionType } from './TransactionsTypes';
 
 const INITIAL_STATE = {
-  currentTransaction: { name: '', cost: '', category: '' },
+  currentTransaction: {
+    name: '',
+    cost: '',
+    category: '',
+    date: moment().format('YYYY-MM-DD')
+  },
   allTransactions: [],
   selectedCategory: '',
   currentCategory: ''
@@ -30,7 +36,7 @@ const transactions = (state: State = INITIAL_STATE, action: Action) => {
     case types.ADD_TRANSACTION: {
       return {
         ...state,
-        currentTransaction: {},
+        currentTransaction: INITIAL_STATE.currentTransaction,
         allTransactions: [...state.allTransactions, action.transaction]
       };
     }

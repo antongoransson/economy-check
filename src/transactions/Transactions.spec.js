@@ -1,8 +1,9 @@
 import React from 'react';
 import { shallow, mount } from 'enzyme';
-import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
+import moment from 'moment';
+import { DatePicker } from 'antd';
 import TransactionsContainer, { Transactions } from './Transactions';
 import {
   addTransaction,
@@ -15,7 +16,12 @@ describe('Transactions tests', () => {
   const initialState = {
     allTransactions: [],
     currentCategory: '',
-    currentTransaction: { name: '', cost: '', category: '' },
+    currentTransaction: {
+      name: '',
+      cost: '',
+      category: '',
+      date: moment().format('YYYY-MM-DD')
+    },
     selectedCategory: ''
   };
   const mockStore = configureStore([thunk]);
@@ -30,8 +36,18 @@ describe('Transactions tests', () => {
     mockSetSelectedCategory = jest.fn();
     mockUpdateCategory = jest.fn();
     store = mockStore(initialState);
-    defaultTransaction = { name: 'ab', cost: '10', category: ' Food' };
-    newTransaction = { name: 'New', cost: '100', category: 'Cats' };
+    defaultTransaction = {
+      name: 'ab',
+      cost: '10',
+      category: ' Food',
+      date: '2017-07-12'
+    };
+    newTransaction = {
+      name: 'New',
+      cost: '100',
+      category: 'Cats',
+      date: '2017-07-13'
+    };
     wrapper = mount(
       <Transactions
         currentTransaction={initialState.currentTransaction}
@@ -90,6 +106,12 @@ describe('Transactions tests', () => {
     expect(mockUpdateTransaction.mock.calls.length).toBe(2);
 
     wrapper
+      .find(DatePicker)
+      .props()
+      .onChange('123');
+    expect(mockUpdateTransaction.mock.calls.length).toBe(3);
+
+    wrapper
       .find('AutoComplete[id="autoCompleteCategory"]')
       .props()
       .onSearch('123');
@@ -109,7 +131,7 @@ describe('Transactions tests', () => {
     expect(mockUpdateTransaction.mock.calls.length).toBe(0);
     wrapper
       .find('Select[id="transactionCategorySelect"]')
-      .at(0)
+      .at(1)
       .props()
       .onChange();
     expect(mockUpdateTransaction.mock.calls.length).toBe(1);

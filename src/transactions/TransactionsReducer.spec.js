@@ -1,22 +1,41 @@
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
+import moment from 'moment';
 import transactionsReducer from './TransactionsReducer';
 import * as types from './TransactionsTypes';
 
 describe('Transactions tests', () => {
-  const initialState = {
-    currentTransaction: { name: '', cost: '', category: '' },
-    allTransactions: [],
-    selectedCategory: '',
-    currentCategory: ''
-  };
+  // const initialDate = moment();
+  let initialState;
   const mockStore = configureStore([thunk]);
   let store, defaultTransaction, newTransaction, state;
 
   beforeEach(() => {
+    initialState = {
+      currentTransaction: {
+        name: '',
+        cost: '',
+        category: '',
+        date: moment().format('YYYY-MM-DD')
+      },
+      allTransactions: [],
+      selectedCategory: '',
+      currentCategory: ''
+    };
     store = mockStore(initialState);
-    defaultTransaction = { name: 'ab', cost: '10', category: ' Food' };
-    newTransaction = { name: 'New', cost: '100', category: 'Cats' };
+    defaultTransaction = {
+      name: 'ab',
+      cost: '10',
+      category: ' Food',
+      date: '2017-08-04'
+    };
+    newTransaction = {
+      name: 'New',
+      cost: '100',
+      category: 'Cats',
+      date: '2017-08-12'
+    };
+
     state = {
       currentTransaction: defaultTransaction,
       allTransactions: [defaultTransaction],
@@ -38,7 +57,7 @@ describe('Transactions tests', () => {
     });
     expect(newState).toEqual({
       ...state,
-      currentTransaction: {},
+      currentTransaction: initialState.currentTransaction,
       allTransactions: [...state.allTransactions, newTransaction]
     });
   });
