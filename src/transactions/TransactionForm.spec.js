@@ -1,73 +1,68 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { mount } from 'enzyme';
 import moment from 'moment';
 import { DatePicker } from 'antd';
 import TransactionForm from './TransactionForm';
-import {
-  addTransaction,
-  setSelectedCategory,
-  updateTransaction
-} from './TransactionsActions';
+import type { Props } from './TransactionForm';
 import * as types from './TransactionsTypes';
 
-describe('Transactions tests', () => {
-  const currentTransaction = {
+const setup = propOverrides => {
+  const currentTransaction: types.transactionType = {
     name: '',
     cost: '',
     category: '',
     date: moment().format('YYYY-MM-DD')
   };
-  let wrapper,
-    mockAddTransaction,
-    mockUpdateTransaction,
-    initialState,
-    defaultTransaction,
-    newTransaction;
-  beforeEach(() => {
-    mockAddTransaction = jest.fn();
-    mockUpdateTransaction = jest.fn();
-    defaultTransaction = {
+  const mockAddTransaction = jest.fn();
+  const mockUpdateTransaction = jest.fn();
+  const props: Props = Object.assign(
+    {
+      currentTransaction,
+      addTransaction: mockAddTransaction,
+      updateTransaction: mockUpdateTransaction
+    },
+    propOverrides
+  );
+  const wrapper = mount(<TransactionForm {...props} />);
+  return { wrapper, mockAddTransaction, mockUpdateTransaction };
+};
+describe('Transactions tests', () => {
+  it('renders correctly', () => {
+    const { wrapper } = setup();
+    expect(wrapper.find(TransactionForm).length).toEqual(1);
+  });
+
+  it('check props matches with given prop', () => {
+    const currentTransaction = {
       name: 'ab',
       cost: '10',
       category: ' Food',
       date: '2017-07-12'
     };
-    newTransaction = {
-      name: 'New',
-      cost: '100',
-      category: 'Cats',
-      date: '2017-07-13'
-    };
-    wrapper = mount(
-      <TransactionForm
-        currentTransaction={currentTransaction}
-        addTransaction={() => mockAddTransaction()}
-        updateTransaction={() => mockUpdateTransaction()}
-      />
-    );
-    // sWrapper = shallow(<TransactionsContainer store={store} />);
-  });
-
-  it('renders correctly', () => {
-    expect(wrapper.find(TransactionForm).length).toEqual(1);
-  });
-
-  it('check Prop matches with initialState', () => {
+    const { wrapper } = setup({ currentTransaction });
     expect(wrapper.find(TransactionForm).prop('currentTransaction')).toEqual(
       currentTransaction
     );
   });
 
-  it('check autocomplete values matchers with redux state', () => {
+  it('check autocomplete values matchers with prop values', () => {
+    const currentTransaction = {
+      name: 'ab',
+      cost: '10',
+      category: ' Food',
+      date: '2017-07-12'
+    };
+    const { wrapper } = setup({ currentTransaction });
     expect(
       wrapper.find('AutoComplete[id="autoCompleteName"]').props().value
     ).toEqual(currentTransaction.name);
     expect(
       wrapper.find('AutoComplete[id="autoCompleteCost"]').props().value
-    ).toEqual(currentTransaction.cost || '');
+    ).toEqual(currentTransaction.cost);
   });
 
   it('check autocomplete calls prop functions', () => {
+    const { wrapper, mockUpdateTransaction } = setup();
     expect(mockUpdateTransaction.mock.calls.length).toBe(0);
     wrapper
       .find('AutoComplete[id="autoCompleteName"]')
@@ -95,6 +90,7 @@ describe('Transactions tests', () => {
   });
 
   it('check addTransactionButton calls props addFunction ', () => {
+    const { wrapper, mockAddTransaction } = setup();
     expect(mockAddTransaction.mock.calls.length).toBe(0);
     wrapper
       .find('Button[id="addTransactionButton"]')
@@ -104,6 +100,7 @@ describe('Transactions tests', () => {
   });
 
   it('check select propely calls props addFunction ', () => {
+    const { wrapper, mockUpdateTransaction } = setup();
     expect(mockUpdateTransaction.mock.calls.length).toBe(0);
     wrapper
       .find('Select[id="transactionCategorySelect"]')
@@ -114,6 +111,7 @@ describe('Transactions tests', () => {
   });
 
   it('check addTransactionButton is correctly disabled', () => {
+    const { wrapper } = setup();
     expect(
       wrapper.find('Button[id="addTransactionButton"]').props().disabled
     ).toBe(true);

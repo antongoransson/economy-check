@@ -5,7 +5,7 @@ import moment from 'moment';
 import type Moment from 'moment';
 import type { transactionType } from './TransactionsTypes';
 
-type Props = {
+export type Props = {
   addTransaction: transactionType => void,
   currentTransaction: transactionType,
   updateTransaction: (field: string, value: string) => void

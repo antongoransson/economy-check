@@ -1,9 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { AutoComplete, Button, DatePicker, List, Select } from 'antd';
-import { isEmpty, isFinite } from 'lodash/fp';
-import moment from 'moment';
-import type Moment from 'moment';
+import { AutoComplete, List } from 'antd';
 import * as actions from './TransactionsActions';
 import type { transactionType } from './TransactionsTypes';
 import TransactionForm from './TransactionForm';
@@ -18,6 +15,12 @@ type Props = {
   updateCategory: string => void,
   updateTransaction: (field: string, value: string) => void
 };
+
+export const renderItem = (item: transactionType) => (
+  <List.Item>{`${item.name}${item.cost}${item.category}${
+    item.date
+  }`}</List.Item>
+);
 
 export const Transactions = ({
   addTransaction,
@@ -86,14 +89,7 @@ export const Transactions = ({
       </Button>
       </div> */}
     <h3>Transactions</h3>
-    <List
-      dataSource={allTransactions}
-      renderItem={item => (
-        <List.Item>{`${item.name}       ${item.cost}       ${
-          item.category
-        }       ${item.date}`}</List.Item>
-      )}
-    />
+    <List dataSource={allTransactions} renderItem={renderItem} />
   </div>
 );
 

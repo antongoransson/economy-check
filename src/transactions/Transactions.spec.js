@@ -3,7 +3,10 @@ import { shallow, mount } from 'enzyme';
 import thunk from 'redux-thunk';
 import configureStore from 'redux-mock-store';
 import moment from 'moment';
-import TransactionsContainer, { Transactions } from './Transactions';
+import TransactionsContainer, {
+  Transactions,
+  renderItem
+} from './Transactions';
 import TransactionForm from './TransactionForm';
 import {
   addTransaction,
@@ -89,7 +92,7 @@ describe('Transactions tests', () => {
   });
 
   it('check action on dispatching ', () => {
-    const testCategory = 'Food';
+    const testCategory: string = 'Food';
     store.dispatch(addTransaction(defaultTransaction));
     store.dispatch(updateTransaction('name', defaultTransaction.name));
     store.dispatch(setSelectedCategory(testCategory));
@@ -113,6 +116,12 @@ describe('Transactions tests', () => {
     expect(wrapper.find('List').prop('dataSource')).toEqual(
       initialState.allTransactions
     );
+    expect(
+      wrapper
+        .find('List')
+        .props()
+        .renderItem(defaultTransaction)
+    ).toEqual(renderItem(defaultTransaction));
   });
 
   it('should call actions from prop functions', () => {
