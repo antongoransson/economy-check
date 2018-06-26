@@ -6,6 +6,7 @@ import moment from 'moment';
 import type Moment from 'moment';
 import * as actions from './TransactionsActions';
 import type { transactionType } from './TransactionsTypes';
+import TransactionForm from './TransactionForm';
 
 type Props = {
   addTransaction: transactionType => void,
@@ -17,12 +18,6 @@ type Props = {
   updateCategory: string => void,
   updateTransaction: (field: string, value: string) => void
 };
-
-const MOCK_CATEGORIES = ['Food', 'Sport', 'Travel'];
-const { Option } = Select;
-
-const isValid: transactionType => boolean = (t: transactionType) =>
-  Object.values(t).every(k => !isEmpty(k) && k !== 0);
 
 export const Transactions = ({
   addTransaction,
@@ -36,55 +31,11 @@ export const Transactions = ({
 }: Props) => (
   <div>
     <h3>Handle transactions</h3>
-    <AutoComplete
-      id="autoCompleteName"
-      onSearch={(val: string) => updateTransaction('name', val)}
-      value={currentTransaction.name}
-      autoFocus
-      placeholder="Name"
+    <TransactionForm
+      addTransaction={addTransaction}
+      currentTransaction={currentTransaction}
+      updateTransaction={updateTransaction}
     />
-    <AutoComplete
-      id="autoCompleteCost"
-      onSearch={(val: string) => {
-        // Should be possible to write floats with either comma or dot
-        if ((val && isFinite(Number(val.replace(',', '.')))) || val === '')
-          updateTransaction('cost', val);
-      }}
-      value={currentTransaction.cost || ''}
-      placeholder="Cost"
-    />
-    <Select
-      id="transactionCategorySelect"
-      showSearch
-      style={{ width: 200 }}
-      placeholder="Select category"
-      optionFilterProp="children"
-      onChange={(val: string) => updateTransaction('category', val)}
-      filterOption={(input, option) =>
-        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      }
-    >
-      {MOCK_CATEGORIES.map(c => (
-        <Option key={c} value={c.toLowerCase()}>
-          {c}
-        </Option>
-      ))}
-    </Select>
-    <DatePicker
-      allowClear={false}
-      onChange={(date: Moment) =>
-        updateTransaction('date', moment(date).format('YYYY-MM-DD'))
-      }
-      value={moment(currentTransaction.date)}
-    />
-    <Button
-      type="primary"
-      id="addTransactionButton"
-      disabled={!isValid(currentTransaction)}
-      onClick={() => addTransaction(currentTransaction)}
-    >
-      Add Transaction
-    </Button>
     <h3>Handle categories</h3>
     <AutoComplete
       id="autoCompleteCategory"
